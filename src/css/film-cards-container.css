@@ -1,0 +1,12 @@
+.film-cards-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  margin: 0 15px;
+}
+
+.film-cards-container .film-card {
+  width: 30%;
+  margin-right: 2%;
+}

@@ -1,0 +1,34 @@
+:root {
+  --main-text-color: #000000;
+}
+
+body {
+  padding: 10px;
+  margin: 0;
+}
+
+html {
+  font-size: 10px;
+  line-height: 10px;
+
+  color: var(--main-text-color);
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline
+}
+
+h1,
+h2,
+h3 {
+  font-size: 30px;
+  line-height: 35px;
+}
+
+@import "./src/css/film-card.css";
+@import "./src/css/film-cards-container.css";
+@import "./src/css/buttons.css";
