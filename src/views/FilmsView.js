@@ -14,10 +14,11 @@ export class FilmsView extends View {
 
   static #renderGoToFavoritesBlock() {
     const container = document.createElement('div');
+    container.className = 'film-cards-container__links-block';
     const goToFavoritesLink = document.createElement('a');
     goToFavoritesLink.href = `#${Routes.FavoriteFilms}`;
     goToFavoritesLink.textContent = FilmsView.#Text.GoToFavoritesLinkText;
-    goToFavoritesLink.className = 'link-button';
+    goToFavoritesLink.className = 'link-button film-cards-container__link-button';
 
     container.append(goToFavoritesLink);
 
@@ -42,6 +43,7 @@ export class FilmsView extends View {
     this.#filmsContainer.className = 'films-container';
 
     const titleHTML = document.createElement('h1');
+    titleHTML.className = 'film-cards-container__title';
     titleHTML.textContent = FilmsView.#Text.Title;
     this.#filmsContainer.append(titleHTML);
 

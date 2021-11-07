@@ -1,34 +1,10 @@
-:root {
-  --main-text-color: #000000;
-}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-body {
-  padding: 10px;
-  margin: 0;
-}
+@import "./src/css/constants/constants.css";
+@import "./src/css/global/global.css";
 
-html {
-  font-size: 10px;
-  line-height: 10px;
+@import "./src/css/common/film-card.css";
+@import "./src/css/common/film-cards-container.css";
+@import "./src/css/common/buttons.css";
 
-  color: var(--main-text-color);
-}
-
-a {
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline
-}
-
-h1,
-h2,
-h3 {
-  font-size: 30px;
-  line-height: 35px;
-}
-
-@import "./src/css/film-card.css";
-@import "./src/css/film-cards-container.css";
-@import "./src/css/buttons.css";
+@import "./src/css/pages/film-view.css";

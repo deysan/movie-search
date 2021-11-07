@@ -48,7 +48,7 @@ export class FilmsController {
 
   #updateCurrentRouteInstance() {
     const currentRouteInstance = this.#router.getCurrentRouteInstance();
-    const { routeName, params } = this.#router.getRouteInfo();
+    const { routeName, params } = Router.getRouteInfo();
     const paramsForRender = this.#getRouteViewParams(routeName, params);
     if (currentRouteInstance) {
       currentRouteInstance.update(...paramsForRender);
