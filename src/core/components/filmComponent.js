@@ -1,19 +1,9 @@
+import { Icons } from '../constants/icons';
 import { Routes } from '../constants/routes';
 
 const Text = {
   AddFavoriteButtonText: 'Add to Favorites',
   RemoveFavoriteButtonText: 'Remove from Favorites',
-};
-
-export const updateIsFavoriteActionButton = (
-  actionButtonHTML,
-  isFavorite,
-) => {
-  if (isFavorite) {
-    actionButtonHTML.textContent = Text.RemoveFavoriteButtonText;
-  } else {
-    actionButtonHTML.textContent = Text.AddFavoriteButtonText;
-  }
 };
 
 export const renderFilmComponent = (
@@ -46,17 +36,24 @@ export const renderFilmComponent = (
 
   const actionButton = document.createElement('button');
   actionButton.className = 'film-card__button';
+  const actionButtonImg = document.createElement('img');
+  actionButtonImg.className = 'film-card__button-img';
+  if (filmDto.getIsFavorite()) {
+    actionButtonImg.src = Icons.InFavorites;
+  } else {
+    actionButtonImg.src = Icons.NotInFavorites;
+  }
+  actionButton.append(actionButtonImg);
   if (fixButtonWidth) {
     actionButton.classList.add('film-card__button_fix-width');
   }
-  updateIsFavoriteActionButton(actionButton, filmDto.getIsFavorite());
   actionButton.addEventListener('click', () => {
     if (handleFavoriteButtonClick) {
       handleFavoriteButtonClick(filmDto.getImdbID(), filmDto.getIsFavorite());
     }
   });
 
-  container.append(titleHTML, imageHTML, yearHTML, actionButton);
+  container.append(imageHTML, titleHTML, yearHTML, actionButton);
 
   return container;
 };

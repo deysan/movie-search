@@ -56,7 +56,7 @@ export class FilmsService {
     const isDto = films[0] instanceof FilmDto;
     let finalFilms = films;
     if (isDto) {
-      finalFilms = this.convertFromFilmsDtoToFilm(films);
+      finalFilms = FilmsService.convertFromFilmsDtoToFilm(films);
     }
     if (typeof finalFilms !== 'string') {
       finalFilms = JSON.stringify(finalFilms);

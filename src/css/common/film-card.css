@@ -7,9 +7,10 @@
 }
 
 .film-card__title {
-  font-size: 20px;
-  line-height: 25px;
-  text-decoration: underline;
+  font-size: 2.5rem;
+  line-height: 3rem;
+  font-weight: 500;
+  text-decoration: none;
 
   margin-bottom: 10px;
   color: var(--main-text-color);
@@ -30,10 +31,13 @@
 
 .film-card__poster {
   width: 100%;
-  height: 350px;
+  height: fit-content;
+  
+  max-height: 350px;
+  border-radius: 30px;
   object-fit: contain;
 
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
 .film-card__year {
@@ -45,11 +49,20 @@
 }
 
 .film-card__button {
-  font-size: 15px;
-  line-height: 20px;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   width: 100%;
   color: var(--main-text-color);
+}
+
+.film-card__button-img,
+.film-card__button {
+  width: 30px;
+  height: 30px;
 }
 
 .film-card__button_fix-width {
