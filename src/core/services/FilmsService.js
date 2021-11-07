@@ -1,5 +1,5 @@
 import { StorageKeys } from '../constants/storage';
-import { FilmDto } from '../models/FilmDto';
+import { FilmDto } from '../../models/FilmDto';
 import * as FilmUtils from '../utils/films';
 
 export class FilmsService {
