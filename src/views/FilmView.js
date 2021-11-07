@@ -27,7 +27,7 @@ export class FilmView extends View {
     const backToFilmsLink = document.createElement('a');
     backToFilmsLink.href = `#${Routes.Main}`;
     backToFilmsLink.textContent = FilmView.#Text.BackToFilmsText;
-    backToFilmsLink.className = 'link-button';
+    backToFilmsLink.className = 'link-button film-view__back-button';
 
     this.#filmContainer.append(filmHTML, backToFilmsLink);
   }
@@ -39,6 +39,7 @@ export class FilmView extends View {
 
     const root = this.getRoot();
     this.#filmContainer = document.createElement('div');
+    this.#filmContainer.className = 'film-view';
     this.#renderFilm(filmDto);
 
     root.append(this.#filmContainer);

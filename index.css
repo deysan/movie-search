@@ -6,3 +6,5 @@
 @import "./src/css/common/film-card.css";
 @import "./src/css/common/film-cards-container.css";
 @import "./src/css/common/buttons.css";
+
+@import "./src/css/pages/film-view.css";

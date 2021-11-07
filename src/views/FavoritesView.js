@@ -34,18 +34,22 @@ export class FavoritesView extends View {
     const container = document.createElement('div');
 
     const titleHTML = document.createElement('h1');
+    titleHTML.className = 'film-cards-container__title';
     titleHTML.textContent = FavoritesView.#Text.Title;
 
+    const linksBlock = document.createElement('div');
+    linksBlock.className = 'film-cards-container__links-block';
     const allFilmsLinkHTML = document.createElement('a');
     allFilmsLinkHTML.href = `#${Routes.Main}`;
     allFilmsLinkHTML.textContent = FavoritesView.#Text.GoToAllFilmText;
-    allFilmsLinkHTML.className = 'link-button';
+    allFilmsLinkHTML.className = 'link-button film-cards-container__link-button';
+    linksBlock.append(allFilmsLinkHTML);
 
     this.#filmsContainer = document.createElement('div');
     this.#filmsContainer.className = 'film-cards-container';
     this.#renderFilms(favoriteFilms);
 
-    container.append(titleHTML, allFilmsLinkHTML, this.#filmsContainer);
+    container.append(titleHTML, linksBlock, this.#filmsContainer);
 
     root.append(container);
   }
