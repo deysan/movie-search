@@ -17,6 +17,8 @@ export class FilmView extends View {
 
     this.#filmContainer.innerHTML = '';
     this.#renderFilm(filmDto);
+
+    return null;
   }
 
   #renderFilm(filmDto) {
@@ -40,5 +42,7 @@ export class FilmView extends View {
     this.#renderFilm(filmDto);
 
     root.append(this.#filmContainer);
+
+    return null;
   }
 }

@@ -4,6 +4,7 @@ import { View } from './View';
 
 export class FilmsView extends View {
   #filmsContainer;
+
   #filmsListHTML;
 
   static #Text = {
@@ -11,7 +12,7 @@ export class FilmsView extends View {
     Title: 'All Films',
   }
 
-  #renderGoToFavoritesBlock() {
+  static #renderGoToFavoritesBlock() {
     const container = document.createElement('div');
     const goToFavoritesLink = document.createElement('a');
     goToFavoritesLink.href = `#${Routes.FavoriteFilms}`;
@@ -44,7 +45,7 @@ export class FilmsView extends View {
     titleHTML.textContent = FilmsView.#Text.Title;
     this.#filmsContainer.append(titleHTML);
 
-    const favoritesBlockHTML = this.#renderGoToFavoritesBlock();
+    const favoritesBlockHTML = FilmsView.#renderGoToFavoritesBlock();
     this.#filmsContainer.append(favoritesBlockHTML);
 
     this.#filmsListHTML = document.createElement('div');

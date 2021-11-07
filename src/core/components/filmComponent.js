@@ -14,7 +14,7 @@ export const updateIsFavoriteActionButton = (
   } else {
     actionButtonHTML.textContent = Text.AddFavoriteButtonText;
   }
-}
+};
 
 export const renderFilmComponent = (
   filmDto,
@@ -57,6 +57,6 @@ export const renderFilmComponent = (
   });
 
   container.append(titleHTML, imageHTML, yearHTML, actionButton);
-  
+
   return container;
-}
+};

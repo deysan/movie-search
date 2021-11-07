@@ -1,9 +1,14 @@
 export class FilmDto {
   #title;
+
   #year;
+
   #imdbID;
+
   #type;
+
   #poster;
+
   #isFavorite;
 
   constructor(filmData) {

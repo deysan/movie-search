@@ -2,30 +2,31 @@ import { Routes } from '../core/constants/routes';
 import { films } from '../core/data/films';
 import { Router } from '../core/router/Router';
 import { FilmsService } from '../core/services/FilmsService';
-import { LocalStorage } from '../core/storage/LocalStorage';
 import { filterFilmsByFavoriteKey, getFilmDtoById } from '../core/utils/films';
 
 export class FilmsController {
   #router;
+
   #filmsService;
+
   #allFilms;
 
   constructor(routes = {}, root) {
+    this.#filmsService = new FilmsService();
     this.#router = new Router(routes, root);
     this.#router.setController(this);
-    this.#filmsService = new FilmsService(new LocalStorage());
     this.#allFilms = [];
   }
 
   #getRouteViewParams(routeName, params) {
     let paramsForRender = [];
     if (routeName === Routes.Main) {
-      paramsForRender = [this.#allFilms]
+      paramsForRender = [this.#allFilms];
     } else if (routeName === Routes.Film) {
       const targetFilmDto = getFilmDtoById(this.#allFilms, params.routeId);
       paramsForRender = [targetFilmDto];
     } else if (routeName === Routes.FavoriteFilms) {
-      const favoriteFilms = filterFilmsByFavoriteKey(this.#allFilms)
+      const favoriteFilms = filterFilmsByFavoriteKey(this.#allFilms);
       paramsForRender = [favoriteFilms];
     }
 

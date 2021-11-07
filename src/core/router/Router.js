@@ -2,8 +2,11 @@ import { Routes } from '../constants/routes';
 
 export class Router {
   #routes;
+
   #root;
+
   #controller;
+
   #currentRouteInstance;
 
   constructor(
@@ -13,7 +16,7 @@ export class Router {
     this.#routes = routes;
     this.#root = root;
     this.#controller = null;
-    this.#currentRouteInstance = null
+    this.#currentRouteInstance = null;
   }
 
   setController(controller) {
@@ -24,7 +27,8 @@ export class Router {
     return this.#currentRouteInstance;
   }
 
-  getRouteInfo() {
+  static getRouteInfo() {
+    const { location } = window;
     const hash = location.hash ? location.hash.slice(1) : '';
     const splittedHash = hash.split('/');
     const routeName = splittedHash[0];
@@ -39,7 +43,7 @@ export class Router {
   }
 
   #hashListener() {
-    const routeInfo = this.getRouteInfo();
+    const routeInfo = Router.getRouteInfo();
     const routeName = routeInfo.routeName || Routes.Main;
     const routeParams = routeInfo.params;
     const TargetRoute = this.#routes[routeName];
@@ -47,7 +51,9 @@ export class Router {
     if (TargetRoute) {
       this.#root.innerHTML = '';
       this.#currentRouteInstance = new TargetRoute(this.#root);
-      this.#currentRouteInstance.handleFavoriteButtonClick = this.#controller.handleFavoriteButtonClick.bind(this.#controller);
+      const handleFavoriteButtonClick = this.#controller.handleFavoriteButtonClick
+        .bind(this.#controller);
+      this.#currentRouteInstance.handleFavoriteButtonClick = handleFavoriteButtonClick;
       this.#controller.changeRoute(routeName, this.#currentRouteInstance, routeParams);
     } else {
       throw new Error(`No such route: ${routeName}`);

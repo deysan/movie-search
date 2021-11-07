@@ -11,6 +11,7 @@ module.exports = (env) => ({
     port: 9000,
     open: true,
   },
+  devtool: env.development ? 'source-map' : '',
   mode: env.development ? 'development' : 'production',
   entry: './index.js',
   output: {
