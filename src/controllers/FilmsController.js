@@ -66,15 +66,18 @@ export class FilmsController {
     this.#updateCurrentRouteInstance();
   }
 
-  #fetchAllFilms() {
-    this.#allFilms = this.#filmsService.getAllFilms();
+  async #fetchAllFilms() {
+    const data = await this.#filmsService.getAllFilms();
+    if (!data.error) {
+      this.#allFilms = data;
+    }
   }
 
-  init() {
-    this.#fetchAllFilms();
+  async init() {
+    await this.#fetchAllFilms();
     if (this.#allFilms.length === 0) {
       this.#filmsService.saveFilms(films);
-      this.#fetchAllFilms();
+      await this.#fetchAllFilms();
     }
     this.#router.init();
   }

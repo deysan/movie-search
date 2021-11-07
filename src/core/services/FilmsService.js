@@ -1,9 +1,18 @@
 import { StorageKeys } from '../constants/storage';
 import { FilmDto } from '../../models/FilmDto';
 import * as FilmUtils from '../utils/films';
+import { EnvData } from '../constants/envData';
 
 export class FilmsService {
   #storage;
+
+  static #Urls = {
+    Main: `https://www.omdbapi.com/?s=marvel&apikey=${EnvData.FilmsApiKey}`
+  }
+
+  static #Errors = {
+    Unknown: 'Unknown Error',
+  }
 
   constructor() {
     this.#storage = window.localStorage;
@@ -11,12 +20,12 @@ export class FilmsService {
 
   static convertFilmsToFilmsDto(films) {
     return films.map((film) => new FilmDto({
-      title: film.title,
-      year: film.year,
-      imdbID: film.imdbID,
-      type: film.type,
-      poster: film.poster,
-      isFavorite: film.isFavorite,
+      title: film.Title,
+      year: film.Year,
+      imdbID: film.ImdbID,
+      type: film.Type,
+      poster: film.Poster,
+      isFavorite: !!film.isFavorite,
     }));
   }
 
@@ -40,16 +49,20 @@ export class FilmsService {
     return films;
   }
 
-  getAllFilms() {
-    let allFilms = this.#storage.getItem(StorageKeys.Films);
-    if (allFilms) {
-      allFilms = JSON.parse(allFilms);
-    }
-    if (!allFilms || !Array.isArray(allFilms)) {
-      return [];
-    }
+  async getAllFilms() {
+    try {
+      const response = await fetch(FilmsService.#Urls.Main);
+      const filmsData = await response.json();
+      if (!filmsData?.Search) {
+        return [];
+      }
 
-    return FilmsService.convertFilmsToFilmsDto(allFilms);
+      return FilmsService.convertFilmsToFilmsDto(filmsData.Search);
+    } catch (error) {
+      return {
+        error: error?.message ?? FilmsService.#Errors.Unknown,
+      }
+    }
   }
 
   saveFilms(films) {

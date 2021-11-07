@@ -1,4 +1,5 @@
 import './index.css';
+import "regenerator-runtime/runtime";
 
 import { FilmsController } from './src/controllers/FilmsController';
 import { Routes } from './src/core/constants/routes';

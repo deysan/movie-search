@@ -1,6 +1,8 @@
-var path = require('path');
+require("@babel/polyfill");
+const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = (env) => ({
   devServer: {
@@ -13,7 +15,7 @@ module.exports = (env) => ({
   },
   devtool: env.development ? 'source-map' : '',
   mode: env.development ? 'development' : 'production',
-  entry: './index.js',
+  entry: ['@babel/polyfill', './index.js'],
   output: {
     path: path.resolve(__dirname, './build'),
     filename: 'index_bundle.js',
@@ -21,6 +23,7 @@ module.exports = (env) => ({
   plugins: [
     new HtmlWebpackPlugin({ template: './index.html' }),
     new CleanWebpackPlugin(),
+    new Dotenv(),
   ],
   module: {
     rules: [
