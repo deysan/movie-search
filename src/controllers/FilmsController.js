@@ -1,7 +1,6 @@
 import { Routes } from '../core/constants/routes';
 import { Router } from '../core/router/Router';
 import { FilmsService } from '../core/services/FilmsService';
-import * as FilmsUtils from '../core/utils/films';
 
 export class FilmsController {
   #router;
@@ -21,9 +20,11 @@ export class FilmsController {
   }
 
   async #fetchAllFilms() {
-    const data = await this.#filmsService.getAllFilms();
-    if (!data.error) {
-      this.#allFilms = data;
+    if (this.#allFilms.length === 0) {
+      const data = await this.#filmsService.getAllFilms();
+      if (!data.error) {
+        this.#allFilms = data;
+      }
     }
   }
 
@@ -36,17 +37,16 @@ export class FilmsController {
     let paramsForRender = [];
     if (routeName === Routes.Main || !routeName) {
       await this.#fetchFavoriteFilms();
-      await this.#fetchAllFilms();
       paramsForRender = [this.#allFilms];
     } else if (routeName === Routes.Film) {
-      console.log('params.routeId', params.routeId);
       const targetFilm = await this.#filmsService.getFilmById(params.routeId);
-      console.log('targetFilm', targetFilm);
       paramsForRender = [targetFilm];
     } else if (routeName === Routes.FavoriteFilms) {
       await this.#fetchFavoriteFilms();
       paramsForRender = [this.#favoriteFilms];
     }
+
+    await this.#fetchAllFilms();
 
     return paramsForRender;
   }
