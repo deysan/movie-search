@@ -1,8 +1,7 @@
 import { Routes } from '../core/constants/routes';
-import { films } from '../core/data/films';
 import { Router } from '../core/router/Router';
 import { FilmsService } from '../core/services/FilmsService';
-import { filterFilmsByFavoriteKey, getFilmDtoById } from '../core/utils/films';
+import * as FilmsUtils from '../core/utils/films';
 
 export class FilmsController {
   #router;
@@ -11,74 +10,86 @@ export class FilmsController {
 
   #allFilms;
 
+  #favoriteFilms;
+
   constructor(routes = {}, root) {
     this.#filmsService = new FilmsService();
     this.#router = new Router(routes, root);
     this.#router.setController(this);
     this.#allFilms = [];
-  }
-
-  #getRouteViewParams(routeName, params) {
-    let paramsForRender = [];
-    if (routeName === Routes.Main) {
-      paramsForRender = [this.#allFilms];
-    } else if (routeName === Routes.Film) {
-      const targetFilmDto = getFilmDtoById(this.#allFilms, params.routeId);
-      paramsForRender = [targetFilmDto];
-    } else if (routeName === Routes.FavoriteFilms) {
-      const favoriteFilms = filterFilmsByFavoriteKey(this.#allFilms);
-      paramsForRender = [favoriteFilms];
-    }
-
-    return paramsForRender;
-  }
-
-  changeRoute(routeName, targetRouteInstance, params = {}) {
-    const paramsForRender = this.#getRouteViewParams(routeName, params);
-    targetRouteInstance.render(...paramsForRender);
-  }
-
-  #addFilmToFavorites(filmId) {
-    this.#filmsService.addFilmToFavorites(this.#allFilms, filmId);
-  }
-
-  #removeFilmFromFavorites(filmId) {
-    this.#filmsService.removeFilmToFavorites(this.#allFilms, filmId);
-  }
-
-  #updateCurrentRouteInstance() {
-    const currentRouteInstance = this.#router.getCurrentRouteInstance();
-    const { routeName, params } = Router.getRouteInfo();
-    const paramsForRender = this.#getRouteViewParams(routeName, params);
-    if (currentRouteInstance) {
-      currentRouteInstance.update(...paramsForRender);
-    }
-  }
-
-  handleFavoriteButtonClick(filmId, isFavorite) {
-    if (isFavorite) {
-      this.#removeFilmFromFavorites(filmId);
-    } else {
-      this.#addFilmToFavorites(filmId);
-    }
-
-    this.#fetchAllFilms();
-    this.#updateCurrentRouteInstance();
+    this.#favoriteFilms = [];
   }
 
   async #fetchAllFilms() {
     const data = await this.#filmsService.getAllFilms();
     if (!data.error) {
       this.#allFilms = data;
+      this.#allFilms.forEach((filmDto) => {
+        const isFavorite = FilmsUtils.checkIfInFavorites(this.#favoriteFilms, filmDto.getImdbID());
+        filmDto.setIsFavorite(isFavorite);
+      });
     }
   }
 
-  async init() {
-    await this.#fetchAllFilms();
-    if (this.#allFilms.length === 0) {
-      this.#filmsService.saveFilms(films);
+  async #fetchFavoriteFilms() {
+    const favoriteFilms = await this.#filmsService.getFavoriteFilms();
+    this.#favoriteFilms = favoriteFilms;
+  }
+
+  async #getRouteViewParams(routeName, params) {
+    let paramsForRender = [];
+    if (routeName === Routes.Main || !routeName) {
+      await this.#fetchFavoriteFilms();
       await this.#fetchAllFilms();
+      paramsForRender = [this.#allFilms];
+    } else if (routeName === Routes.Film) {
+      const targetFilm = await this.#filmsService.getFilmById(params.routeId);
+      paramsForRender = [targetFilm];
+    } else if (routeName === Routes.FavoriteFilms) {
+      await this.#fetchFavoriteFilms();
+      paramsForRender = [this.#favoriteFilms];
     }
+
+    return paramsForRender;
+  }
+
+  async changeRoute(routeName, targetRouteInstance, params = {}) {
+    const paramsForRender = await this.#getRouteViewParams(routeName, params);
+    targetRouteInstance.render(...paramsForRender);
+  }
+
+  async #addFilmToFavorites(filmId) {
+    await this.#filmsService.addFilmToFavorites(
+      this.#allFilms, this.#favoriteFilms, filmId,
+    );
+  }
+
+  async #removeFilmFromFavorites(filmId) {
+    await this.#filmsService.removeFilmToFavorites(
+      this.#allFilms, this.#favoriteFilms, filmId,
+    );
+  }
+
+  async #updateCurrentRouteInstance() {
+    const currentRouteInstance = this.#router.getCurrentRouteInstance();
+    const { routeName, params } = Router.getRouteInfo();
+    const paramsForRender = await this.#getRouteViewParams(routeName, params);
+    if (currentRouteInstance) {
+      currentRouteInstance.update(...paramsForRender);
+    }
+  }
+
+  async handleFavoriteButtonClick(filmId, isFavorite) {
+    if (isFavorite) {
+      await this.#removeFilmFromFavorites(filmId);
+    } else {
+      await this.#addFilmToFavorites(filmId);
+    }
+
+    await this.#updateCurrentRouteInstance();
+  }
+
+  async init() {
     this.#router.init();
   }
 }

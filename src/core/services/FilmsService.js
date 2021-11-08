@@ -1,13 +1,16 @@
-import { StorageKeys } from '../constants/storage';
 import { FilmDto } from '../../models/FilmDto';
 import * as FilmUtils from '../utils/films';
 import { EnvData } from '../constants/envData';
+import { StorageKeys } from '../constants/storage';
 
 export class FilmsService {
   #storage;
 
+  static #DefaultSearchValue = 'marvel';
+
   static #Urls = {
-    Main: `https://www.omdbapi.com/?s=marvel&apikey=${EnvData.FilmsApiKey}`
+    Main: (searchByName = FilmsService.#DefaultSearchValue) => `https://www.omdbapi.com/?s=${searchByName}&apikey=${EnvData.FilmsApiKey}`,
+    FilmById: (filmId, searchByName = FilmsService.#DefaultSearchValue) => `${FilmsService.#Urls.Main(searchByName)}&i=${filmId}`,
   }
 
   static #Errors = {
@@ -22,7 +25,7 @@ export class FilmsService {
     return films.map((film) => new FilmDto({
       title: film.Title,
       year: film.Year,
-      imdbID: film.ImdbID,
+      imdbID: film.imdbID,
       type: film.Type,
       poster: film.Poster,
       isFavorite: !!film.isFavorite,
@@ -31,27 +34,18 @@ export class FilmsService {
 
   static convertFromFilmsDtoToFilm(filmDtos) {
     return filmDtos.map((filmDto) => ({
-      title: filmDto.getTitle(),
-      year: filmDto.getYear(),
+      Title: filmDto.getTitle(),
+      Year: filmDto.getYear(),
       imdbID: filmDto.getImdbID(),
-      type: filmDto.getType(),
-      poster: filmDto.getPoster(),
+      Type: filmDto.getType(),
+      Poster: filmDto.getPoster(),
       isFavorite: filmDto.getIsFavorite(),
     }));
   }
 
-  static updateFilmDtoFavoriteValue(films, filmId, isFavorite) {
-    const targetFilmDto = FilmUtils.getFilmDtoById(films, filmId);
-    if (targetFilmDto) {
-      targetFilmDto.setIsFavorite(isFavorite);
-    }
-
-    return films;
-  }
-
-  async getAllFilms() {
+  async #getFilmsByUrl(url) {
     try {
-      const response = await fetch(FilmsService.#Urls.Main);
+      const response = await fetch(url);
       const filmsData = await response.json();
       if (!filmsData?.Search) {
         return [];
@@ -61,38 +55,74 @@ export class FilmsService {
     } catch (error) {
       return {
         error: error?.message ?? FilmsService.#Errors.Unknown,
-      }
+      };
     }
+  }
+
+  static updateFilmDtoFavoriteValue(films, filmId, isFavorite) {
+    const targetFilmDto = FilmUtils.getFilmDtoById(films, filmId);
+    if (targetFilmDto) {
+      targetFilmDto.setIsFavorite(isFavorite);
+    }
+
+    return targetFilmDto;
+  }
+
+  async getAllFilms() {
+    const result = await this.#getFilmsByUrl(FilmsService.#Urls.Main());
+    return result;
+  }
+
+  async getFilmById(filmId) {
+    const result = await this.#getFilmsByUrl(FilmsService.#Urls.FilmById(filmId));
+    return result;
   }
 
   saveFilms(films) {
-    const isDto = films[0] instanceof FilmDto;
-    let finalFilms = films;
-    if (isDto) {
-      finalFilms = FilmsService.convertFromFilmsDtoToFilm(films);
-    }
-    if (typeof finalFilms !== 'string') {
-      finalFilms = JSON.stringify(finalFilms);
-    }
-    this.#storage.setItem(StorageKeys.Films, finalFilms);
+    return new Promise((resolve) => {
+      let finalFilms = films.map((film) => {
+        const isDto = film instanceof FilmDto;
+        if (isDto) {
+          const convertedFilms = FilmsService.convertFromFilmsDtoToFilm([film]);
+          return convertedFilms[0];
+        }
+
+        return film;
+      });
+      if (typeof finalFilms !== 'string') {
+        finalFilms = JSON.stringify(finalFilms);
+      }
+      this.#storage.setItem(StorageKeys.FavoriteFilms, finalFilms);
+      resolve();
+    });
   }
 
-  getFilmById(filmId) {
-    const allFilms = this.getAllFilms();
-    if (Array.isArray(allFilms)) {
-      return allFilms.filter((film) => film.getImdbID() === filmId);
+  async addFilmToFavorites(films, favoriteFilms, filmId) {
+    const targetFilmDto = FilmsService.updateFilmDtoFavoriteValue(films, filmId, true);
+    if (targetFilmDto) {
+      const finalFilms = [...favoriteFilms, targetFilmDto];
+      await this.saveFilms(finalFilms);
     }
-
-    return null;
   }
 
-  addFilmToFavorites(films, filmId) {
-    const updatedFilms = FilmsService.updateFilmDtoFavoriteValue(films, filmId, true);
-    this.saveFilms(updatedFilms);
+  async removeFilmToFavorites(films, favoriteFilms, filmId) {
+    const targetFilmDto = FilmsService.updateFilmDtoFavoriteValue(films, filmId, false);
+    if (targetFilmDto) {
+      const finalFilms = favoriteFilms
+        .filter((filmDto) => filmDto.getImdbID() !== targetFilmDto.getImdbID());
+      await this.saveFilms(finalFilms);
+    }
   }
 
-  removeFilmToFavorites(films, filmId) {
-    const updatedFilms = FilmsService.updateFilmDtoFavoriteValue(films, filmId, false);
-    this.saveFilms(updatedFilms);
+  async getFavoriteFilms() {
+    return new Promise((resolve) => {
+      const storageData = this.#storage.getItem(StorageKeys.FavoriteFilms);
+      if (typeof storageData === 'string') {
+        const finalData = JSON.parse(storageData);
+        resolve(FilmsService.convertFilmsToFilmsDto(finalData ?? []));
+      } else {
+        resolve([]);
+      }
+    });
   }
 }

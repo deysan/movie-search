@@ -42,7 +42,7 @@ export class Router {
     };
   }
 
-  #hashListener() {
+  async #hashListener() {
     const routeInfo = Router.getRouteInfo();
     const routeName = routeInfo.routeName || Routes.Main;
     const routeParams = routeInfo.params;
@@ -54,7 +54,7 @@ export class Router {
       const handleFavoriteButtonClick = this.#controller.handleFavoriteButtonClick
         .bind(this.#controller);
       this.#currentRouteInstance.handleFavoriteButtonClick = handleFavoriteButtonClick;
-      this.#controller.changeRoute(routeName, this.#currentRouteInstance, routeParams);
+      await this.#controller.changeRoute(routeName, this.#currentRouteInstance, routeParams);
     } else {
       throw new Error(`No such route: ${routeName}`);
     }

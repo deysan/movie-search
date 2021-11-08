@@ -1,11 +1,6 @@
 import { Icons } from '../constants/icons';
 import { Routes } from '../constants/routes';
 
-const Text = {
-  AddFavoriteButtonText: 'Add to Favorites',
-  RemoveFavoriteButtonText: 'Remove from Favorites',
-};
-
 export const renderFilmComponent = (
   filmDto,
   isTitleLink = true,
@@ -47,9 +42,9 @@ export const renderFilmComponent = (
   if (fixButtonWidth) {
     actionButton.classList.add('film-card__button_fix-width');
   }
-  actionButton.addEventListener('click', () => {
+  actionButton.addEventListener('click', async () => {
     if (handleFavoriteButtonClick) {
-      handleFavoriteButtonClick(filmDto.getImdbID(), filmDto.getIsFavorite());
+      await handleFavoriteButtonClick(filmDto.getImdbID(), filmDto.getIsFavorite());
     }
   });
 
