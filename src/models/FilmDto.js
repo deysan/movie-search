@@ -12,7 +12,6 @@ export class FilmDto {
   #isFavorite;
 
   constructor(filmData) {
-    console.log('filmData', filmData);
     this.#title = filmData.title;
     this.#year = filmData.year;
     this.#imdbID = filmData.imdbID;

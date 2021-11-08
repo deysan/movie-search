@@ -24,10 +24,6 @@ export class FilmsController {
     const data = await this.#filmsService.getAllFilms();
     if (!data.error) {
       this.#allFilms = data;
-      this.#allFilms.forEach((filmDto) => {
-        const isFavorite = FilmsUtils.checkIfInFavorites(this.#favoriteFilms, filmDto.getImdbID());
-        filmDto.setIsFavorite(isFavorite);
-      });
     }
   }
 
@@ -43,7 +39,9 @@ export class FilmsController {
       await this.#fetchAllFilms();
       paramsForRender = [this.#allFilms];
     } else if (routeName === Routes.Film) {
+      console.log('params.routeId', params.routeId);
       const targetFilm = await this.#filmsService.getFilmById(params.routeId);
+      console.log('targetFilm', targetFilm);
       paramsForRender = [targetFilm];
     } else if (routeName === Routes.FavoriteFilms) {
       await this.#fetchFavoriteFilms();

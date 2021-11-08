@@ -10,7 +10,7 @@ export class FilmsService {
 
   static #Urls = {
     Main: (searchByName = FilmsService.#DefaultSearchValue) => `https://www.omdbapi.com/?s=${searchByName}&apikey=${EnvData.FilmsApiKey}`,
-    FilmById: (filmId, searchByName = FilmsService.#DefaultSearchValue) => `${FilmsService.#Urls.Main(searchByName)}&i=${filmId}`,
+    FilmById: (filmId) => `https://www.omdbapi.com/?i=${filmId}&apikey=${EnvData.FilmsApiKey}`,
   }
 
   static #Errors = {
@@ -47,11 +47,7 @@ export class FilmsService {
     try {
       const response = await fetch(url);
       const filmsData = await response.json();
-      if (!filmsData?.Search) {
-        return [];
-      }
-
-      return FilmsService.convertFilmsToFilmsDto(filmsData.Search);
+      return filmsData;
     } catch (error) {
       return {
         error: error?.message ?? FilmsService.#Errors.Unknown,
@@ -70,11 +66,31 @@ export class FilmsService {
 
   async getAllFilms() {
     const result = await this.#getFilmsByUrl(FilmsService.#Urls.Main());
+    if (result.Search) {
+      const favoriteFilms = await this.getFavoriteFilms();
+      const filmsDtos = FilmsService.convertFilmsToFilmsDto(result.Search);
+      filmsDtos.forEach((filmDto) => {
+        const isFavorite = FilmUtils.checkIfInFavorites(favoriteFilms, filmDto.getImdbID());
+        filmDto.setIsFavorite(isFavorite);
+      });
+      return filmsDtos;
+    }
+
     return result;
   }
 
   async getFilmById(filmId) {
     const result = await this.#getFilmsByUrl(FilmsService.#Urls.FilmById(filmId));
+    if (!result?.error) {
+      const favoriteFilms = await this.getFavoriteFilms();
+      const filmDto = FilmsService.convertFilmsToFilmsDto([result])[0];
+      if (filmDto) {
+        const isFavorite = FilmUtils.checkIfInFavorites(favoriteFilms, filmDto.getImdbID());
+        filmDto.setIsFavorite(isFavorite);
+      }
+
+      return filmDto;
+    }
     return result;
   }
 
