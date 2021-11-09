@@ -32,7 +32,11 @@ export class FilmsView extends View {
 
   #renderFilms(films) {
     films.forEach((filmDto) => {
-      const filmHTML = renderFilmComponent(filmDto, true, this.handleFavoriteButtonClick);
+      const filmHTML = renderFilmComponent({
+        filmDto,
+        isTitleLink: true,
+        handleFavoriteButtonClick: this.handleFavoriteButtonClick,
+      });
       this.#filmsListHTML.append(filmHTML);
     });
   }

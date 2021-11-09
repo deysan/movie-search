@@ -35,6 +35,9 @@ export class FilmsController {
 
   async #getRouteViewParams(routeName, params) {
     let paramsForRender = [];
+
+    await this.#fetchAllFilms();
+
     if (routeName === Routes.Main || !routeName) {
       await this.#fetchFavoriteFilms();
       paramsForRender = [this.#allFilms];
@@ -46,14 +49,14 @@ export class FilmsController {
       paramsForRender = [this.#favoriteFilms];
     }
 
-    await this.#fetchAllFilms();
-
     return paramsForRender;
   }
 
   async changeRoute(routeName, targetRouteInstance, params = {}) {
+    this.#router.showLoader();
     const paramsForRender = await this.#getRouteViewParams(routeName, params);
     targetRouteInstance.render(...paramsForRender);
+    this.#router.hideLoader();
   }
 
   async #addFilmToFavorites(filmId) {

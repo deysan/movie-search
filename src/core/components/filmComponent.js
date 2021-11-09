@@ -1,12 +1,12 @@
 import { Icons } from '../constants/icons';
 import { Routes } from '../constants/routes';
 
-export const renderFilmComponent = (
+export const renderFilmComponent = ({
   filmDto,
   isTitleLink = true,
   handleFavoriteButtonClick = null,
   fixButtonWidth = false,
-) => {
+}) => {
   const container = document.createElement('div');
   container.className = 'film-card';
 

@@ -7,7 +7,7 @@ export class FavoritesView extends View {
 
   static #Text = {
     Title: 'Your Favorite Films',
-    NoFavoriteFilmsText: 'No Any Favorite Films',
+    NoFavoriteFilmsText: 'No Any Favorite Films...',
     GoToAllFilmText: 'See All Films',
   }
 
@@ -19,7 +19,11 @@ export class FavoritesView extends View {
   #renderFilms(films) {
     if (films.length > 0) {
       films.forEach((filmDto) => {
-        const filmHTML = renderFilmComponent(filmDto, true, this.handleFavoriteButtonClick);
+        const filmHTML = renderFilmComponent({
+          filmDto,
+          isTitleLink: true,
+          handleFavoriteButtonClick: this.handleFavoriteButtonClick,
+        });
         this.#filmsContainer.append(filmHTML);
       });
     } else {

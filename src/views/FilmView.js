@@ -22,7 +22,12 @@ export class FilmView extends View {
   }
 
   #renderFilm(filmDto) {
-    const filmHTML = renderFilmComponent(filmDto, false, this.handleFavoriteButtonClick, true);
+    const filmHTML = renderFilmComponent({
+      filmDto,
+      isTitleLink: false,
+      handleFavoriteButtonClick: this.handleFavoriteButtonClick,
+      fixButtonWidth: true,
+    });
 
     const backToFilmsLink = document.createElement('a');
     backToFilmsLink.href = `#${Routes.Main}`;

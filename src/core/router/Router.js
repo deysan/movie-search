@@ -42,6 +42,18 @@ export class Router {
     };
   }
 
+  showLoader() {
+    if (this.#currentRouteInstance) {
+      this.#currentRouteInstance.showLoader();
+    }
+  }
+
+  hideLoader() {
+    if (this.#currentRouteInstance) {
+      this.#currentRouteInstance.hideLoader();
+    }
+  }
+
   async #hashListener() {
     const routeInfo = Router.getRouteInfo();
     const routeName = routeInfo.routeName || Routes.Main;

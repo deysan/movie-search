@@ -4,6 +4,8 @@
   flex-wrap: wrap;
 
   margin: 0 15px;
+  font-size: 2rem;
+  line-height: 2.1rem;
 }
 
 .film-cards-container .film-card {
