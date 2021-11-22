@@ -1,4 +1,5 @@
 import { EnvData } from '../constants/envData';
+import FilmModel from '../../models/filmModel';
 
 export default class FilmsService {
   static #DefaultSearchValue = 'Marvel';
@@ -9,8 +10,18 @@ export default class FilmsService {
   }
 
   async getFilms() {
-    const response = await fetch(FilmsService.#Urls.Main());
-    const films = response.json();
-    console.log('films', films);
+    try {
+      const response = await fetch(FilmsService.#Urls.Main());
+      const data = response.json();
+      const filmModels = data.Search.map((filmData) => new FilmModel({
+        imdbID: filmData.imdbID,
+        Title: filmData.Title,
+        Poster: filmData.Poster,
+        Year: filmData.Year,
+      }));
+      return filmModels;
+    } catch (err) {
+      return console.error(err);
+    }
   }
 }

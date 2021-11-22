@@ -8,7 +8,8 @@ export default class FilmsController {
     this.#service = service;
   }
 
-  init() {
-    this.#service.getFilms();
+  async init() {
+    const films = await this.#service.getFilms();
+    console.log(films);
   }
 }
