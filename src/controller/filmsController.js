@@ -9,6 +9,6 @@ export default class FilmsController {
   }
 
   init() {
-    console.log('Test work!');
+    this.#service.getFilms();
   }
 }
