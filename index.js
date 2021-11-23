@@ -1,3 +1,4 @@
+import './index.css';
 import Router from './src/core/router/router';
 import FilmsService from './src/core/service/filmsService';
 import FilmsController from './src/controller/filmsController';

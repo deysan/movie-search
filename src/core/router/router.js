@@ -29,15 +29,16 @@ export default class Router {
   #hasgchange() {
     const routeInfo = this.#getRouteInfo();
     const TargetView = this.#routes[routeInfo.routeName] || FilmsView;
-    console.log(TargetView);
     if (TargetView) {
       this.#root.innerHTML = '';
+      const paramsView = this.#controller.getView(routeInfo.routeName);
       const targetView = new TargetView(this.#root);
-      targetView.render();
+      targetView.render(...paramsView);
     }
   }
 
   init() {
     window.addEventListener('hashchange', this.#hasgchange.bind(this));
+    this.#hasgchange();
   }
 }
