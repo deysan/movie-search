@@ -1,7 +1,10 @@
 export default class Router {
   #controller
 
-  constructor() {
+  #routes
+
+  constructor(routes) {
+    this.#routes = routes;
     this.#controller = null;
   }
 
