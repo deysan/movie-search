@@ -12,7 +12,7 @@ export default class FilmsService {
   async getFilms() {
     try {
       const response = await fetch(FilmsService.#Urls.Main());
-      const data = response.json();
+      const data = await response.json();
       const filmModels = data.Search.map((filmData) => new FilmModel({
         imdbID: filmData.imdbID,
         Title: filmData.Title,
