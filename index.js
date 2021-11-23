@@ -9,7 +9,8 @@ const routes = {
   [Routes.Main]: FilmsView,
   [Routes.Film]: FilmView,
 };
-const router = new Router();
+const root = document.getElementById('root');
+const router = new Router(routes, root);
 const filmsService = new FilmsService();
 const controller = new FilmsController(router, filmsService);
 router.setConstroller(controller);

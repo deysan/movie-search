@@ -11,5 +11,7 @@ export default class FilmsController {
   async init() {
     const films = await this.#service.getFilms();
     console.log(films);
+
+    this.#router.init();
   }
 }
