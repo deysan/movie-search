@@ -13,13 +13,13 @@ export default class FilmsController {
     this.#films = [];
   }
 
-  getView(routeName) {
+  async getView(routeName, routeId) {
     let paramsView = [];
 
     if (routeName === Routes.Main) {
       paramsView = [this.#films];
     } else if (routeName === Routes.Film) {
-      paramsView = [];
+      paramsView = [await this.#service.getFilm(routeId)];
     } else {
       paramsView = [this.#films];
     }

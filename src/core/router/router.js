@@ -19,19 +19,23 @@ export default class Router {
 
   #getRouteInfo() {
     const { location } = window;
-    const { hash } = location;
+    const hash = location.hash ? location.hash.slice(1) : '';
+    const splittedHash = hash.split('/');
+    const routeName = splittedHash[0];
+    const routeId = splittedHash[1];
 
     return {
-      routeName: hash.slice(1),
+      routeName,
+      routeId,
     };
   }
 
-  #hasgchange() {
+  async #hasgchange() {
     const routeInfo = this.#getRouteInfo();
     const TargetView = this.#routes[routeInfo.routeName] || FilmsView;
     if (TargetView) {
       this.#root.innerHTML = '';
-      const paramsView = this.#controller.getView(routeInfo.routeName);
+      const paramsView = await this.#controller.getView(routeInfo.routeName, routeInfo.routeId);
       const targetView = new TargetView(this.#root);
       targetView.render(...paramsView);
     }
