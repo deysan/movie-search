@@ -1,4 +1,5 @@
 import View from './View';
+import { Routes } from '../core/constants/routes';
 
 export default class FilmsView extends View {
   static #Text = {
@@ -9,9 +10,10 @@ export default class FilmsView extends View {
     const containerFilmCard = document.createElement('div');
     containerFilmCard.className = 'film-card';
 
-    const titleFilmCard = document.createElement('h2');
+    const titleFilmCard = document.createElement('a');
     titleFilmCard.className = 'film-card__title';
     titleFilmCard.textContent = filmModel.getTitle();
+    titleFilmCard.href = `#${Routes.Film}/${filmModel.getId()}`;
 
     const imageFilmCard = document.createElement('img');
     imageFilmCard.className = 'film-card__poster';

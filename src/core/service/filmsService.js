@@ -24,4 +24,15 @@ export default class FilmsService {
       return console.error(err);
     }
   }
+
+  async getFilm(id) {
+    try {
+      const response = await fetch(FilmsService.#Urls.FilmById(id));
+      const data = await response.json();
+      const filmModel = new FilmModel(data);
+      return filmModel;
+    } catch (err) {
+      return console.error(err);
+    }
+  }
 }
