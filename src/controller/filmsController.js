@@ -5,30 +5,24 @@ export default class FilmsController {
 
   #service
 
-  #films
-
   constructor(router, service) {
     this.#router = router;
     this.#service = service;
-    this.#films = [];
   }
 
   async getView(routeName, routeId) {
     let paramsView = [];
 
-    if (routeName === Routes.Main) {
-      paramsView = [this.#films];
-    } else if (routeName === Routes.Film) {
+    if (routeName === Routes.Film) {
       paramsView = [await this.#service.getFilm(routeId)];
     } else {
-      paramsView = [this.#films];
+      paramsView = [await this.#service.getFilms()];
     }
 
     return paramsView;
   }
 
   async init() {
-    this.#films = await this.#service.getFilms();
     this.#router.init();
   }
 }
