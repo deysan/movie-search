@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx webpack serve --env development",
     "build": "npx webpack",
-    "lint": "npx eslint --fix ./"
+    "lint": "npx eslint --fix ./",
+    "deploy": "npx gh-pages -d build"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +27,7 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.25.2",
     "file-loader": "^6.2.0",
+    "gh-pages": "^3.2.3",
     "html-webpack-plugin": "^5.4.0",
     "regenerator-runtime": "^0.13.9",
     "style-loader": "^3.3.0",
